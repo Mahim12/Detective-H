@@ -2,9 +2,41 @@
 <html>
 <head>
     <title>Detective H</title>
+    <script src="phaser.min.js"></script>
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; }
+        canvas { display: block; margin: 0 auto; }
+    </style>
 </head>
 <body>
-    <h1>Detective H is on the case</h1>
-    <p>If you see this on your phone, it worked.</p>
+    <script>
+        const config = {
+            type: Phaser.AUTO, // This uses WebGL if available, Canvas as fallback
+            width: 1280,
+            height: 720,
+            parent: 'game-container',
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            },
+            scene: {
+                preload: preload,
+                create: create
+            }
+        };
+
+        const game = new Phaser.Game(config);
+
+        function preload() {
+            // We'll add Detective H assets here later
+        }
+
+        function create() {
+            this.add.text(640, 360, 'Detective H: Case Started', { 
+                fontSize: '64px', 
+                fill: '#fff' 
+            }).setOrigin(0.5);
+        }
+    </script>
 </body>
 </html>
