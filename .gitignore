@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Android-specific ignores
+**/build/
+**/.gradle/
+**/.idea/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+
+# Capacitor / OS artifacts
+.DS_Store
