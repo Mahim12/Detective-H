@@ -2,41 +2,23 @@
 <html>
 <head>
     <title>Detective H</title>
-    <script src="phaser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    
     <style>
         body { margin: 0; background: #000; overflow: hidden; }
-        canvas { display: block; margin: 0 auto; }
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+            --sal: env(safe-area-inset-left);
+            --sar: env(safe-area-inset-right);
+        }
     </style>
 </head>
 <body>
-    <script>
-        const config = {
-            type: Phaser.AUTO, // This uses WebGL if available, Canvas as fallback
-            width: 1280,
-            height: 720,
-            parent: 'game-container',
-            scale: {
-                mode: Phaser.Scale.FIT,
-                autoCenter: Phaser.Scale.CENTER_BOTH
-            },
-            scene: {
-                preload: preload,
-                create: create
-            }
-        };
-
-        const game = new Phaser.Game(config);
-
-        function preload() {
-            // We'll add Detective H assets here later
-        }
-
-        function create() {
-            this.add.text(640, 360, 'Detective H: Case Started', { 
-                fontSize: '64px', 
-                fill: '#fff' 
-            }).setOrigin(0.5);
-        }
-    </script>
+    <script src="js/UIHelper.js"></script>
+    <script src="js/RandomUmbrella.js"></script>
+    <script src="js/MainScene.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html>
