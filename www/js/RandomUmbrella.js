@@ -5,7 +5,7 @@ import Phaser from 'phaser';
 // Do not use 'this' in these functions, as they are not class methods.
 const Logic = {
     preload: (scene) => {
-        scene.load.image('logo', 'assets/logo.png');
+        scene.load.image('logo', 'assets/sceneOne/logo.png');
     },
     create: (scene) => {
         const cam = scene.cameras.main;
