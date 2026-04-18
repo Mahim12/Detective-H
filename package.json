@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-android": "vite build && npx cap copy android"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,10 @@
     "@capacitor/android": "^8.3.0",
     "@capacitor/cli": "^8.3.0",
     "@capacitor/core": "^8.3.0",
-    "phaser": "^4.0.0"
+    "@enable3d/phaser-extension": "^0.26.1",
+    "phaser": "^3.60.0"
+  },
+  "devDependencies": {
+    "vite": "^8.0.8"
   }
 }

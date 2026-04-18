@@ -1,15 +1,22 @@
+import Phaser from 'phaser';
+import { enable3d, Canvas } from '@enable3d/phaser-extension';
+import ThreeScene from './ThreeScene.js';
+import RandomUmbrella from './RandomUmbrella.js';
+import MainScene from './MainScene.js';
+
 const config = {
-    type: Phaser.AUTO,
-    backgroundColor: '#000000',
+    type: Phaser.WEBGL,
+    backgroundColor: '#000000', 
     scale: {
         mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 1920,
         height: 1080,
     },
-    // The scenes must be in the array in the order they should run
-    scene: [RandomUmbrella, MainScene] 
+    // Pass the classes directly
+    scene: [RandomUmbrella, MainScene, ThreeScene],
+    ...Canvas()
 };
 
-// Initialize the game
-const game = new Phaser.Game(config);
+// This is the most stable way to initialize without the WASM crash
+new Phaser.Game(config);

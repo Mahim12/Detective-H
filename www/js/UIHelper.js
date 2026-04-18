@@ -1,4 +1,4 @@
-const getSafeArea = (scaleManager) => {
+export const getSafeArea = (scaleManager) => {
     const { width, height } = scaleManager.gameSize;
     const style = window.getComputedStyle(document.documentElement);
 
