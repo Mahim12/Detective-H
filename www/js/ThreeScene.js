@@ -1,37 +1,56 @@
 import { Scene3D } from '@enable3d/phaser-extension';
 
+const Logic = {
+    async init(scene) {
+        await scene.accessThirdDimension();
+    },
+
+    preload(scene) {
+        // nothing for GLB
+    },
+
+    async create(scene) {
+        // 1. Lights (WarpSpeed usually adds them, but let's be 100% sure)
+        scene.third.warpSpeed('-physics'); // Disable physics specifically here
+
+        // 2. The Loader
+        try {
+            const gltf = await scene.third.load.gltf('/assets/human.glb');
+            const model = gltf.scene;
+
+            scene.third.add.existing(model);
+
+            // 3. Force Visibility
+            // Sometimes Blender models are exported tiny (0.01) or huge (100)
+            ///model.scale.set(5, 5, 5);
+            model.position.set(0, 0, 0);
+
+            // 4. Camera Position
+            // Move back far enough to see a large object
+            scene.third.camera.position.set(10, 10, 10);
+            scene.third.camera.lookAt(0, 0, 0);
+
+            console.log("Model loaded and added to scene:", model);
+        } catch (error) {
+            console.error("The GLB failed to load. Check the Network tab!", error);
+        }
+    }
+};
+
 export default class ThreeScene extends Scene3D {
     constructor() {
         super('ThreeScene');
     }
 
+    async init() {
+        await Logic.init(this);
+    }
+
     preload() {
-        // Paths are now relative to index.html in dist
-        this.load.binary('cubeModel', 'assets/cube.glb');
+        Logic.preload(this);
     }
 
     async create() {
-        // Initialize 3D
-        await this.create3D();
-
-        this.third.have.light.ambient({ intensity: 0.4 });
-        this.third.have.light.directional({ intensity: 0.8, x: 2, y: 5, z: 2 });
-
-        const assetData = this.cache.binary.get('cubeModel');
-        if (assetData) {
-            this.third.load.gltf(assetData).then(gltf => {
-                this.cube = gltf.scene.children[0];
-                this.third.add.existing(this.cube);
-                this.cube.position.set(0, 0, 0);
-            });
-        }
-
-        this.third.camera.position.set(0, 2, 10);
-    }
-
-    update() {
-        if (this.cube) {
-            this.cube.rotation.y += 0.01;
-        }
+        await Logic.create(this);
     }
 }
