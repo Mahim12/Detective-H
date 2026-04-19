@@ -6,7 +6,8 @@ import MainScene from './MainScene.js';
 
 const config = {
     type: Phaser.WEBGL,
-    backgroundColor: '#000000', 
+    transparent: true,
+    backgroundColor: '#00000000', 
     scale: {
         mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
