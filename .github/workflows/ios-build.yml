@@ -1,0 +1,39 @@
+name: iOS Build Check
+
+on:
+  push:
+    branches: [ main, feature/vite-setup ] # Runs whenever you push to these branches
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest # This is the "Virtual Mac"
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Assets
+        run: npm run build # Your Vite build
+
+      - name: Capacitor Sync
+        run: |
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Build iOS App (Validation Only)
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+                     -scheme App \
+                     -destination 'generic/platform=iOS Simulator' \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build
