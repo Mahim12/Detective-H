@@ -2,9 +2,11 @@ name: iOS Build Check
 
 on:
   push:
-    branches: [ main, feature/vite-setup, feature/multiple-tests ] # Runs whenever you push to these branches
+    branches:
+      - '**' #Pipelines run on all branches instead of manually specifying  [ main, feature/vite-setup, feature/multiple-tests ] etc
   pull_request:
-    branches: [ main ]
+    branches:
+      - '**' #Pipelines run on all branches instead of manually specifying
 
 jobs:
   build-ios:
@@ -36,3 +38,30 @@ jobs:
                      -destination 'generic/platform=iOS Simulator' \
                      CODE_SIGNING_ALLOWED=NO \
                      build
+
+      - name: Export IPA
+        run: |
+          WORKSPACE_PATH=$(find ios -name "*.xcworkspace" | head -n 1)
+          
+          # 1. Archive the build
+          xcodebuild -workspace "$WORKSPACE_PATH" \
+                     -scheme App \
+                     -destination 'generic/platform=iOS' \
+                     -archivePath App.xcarchive \
+                     CODE_SIGNING_ALLOWED=NO \
+                     archive
+
+          # 2. Export the .ipa
+          # Note: This step MAY still fail without a real Apple Certificate, 
+          # but it's the correct way to try and generate the file.
+          xcodebuild -exportArchive \
+                     -archivePath App.xcarchive \
+                     -exportOptionsPlist ios/App/App/ExportOptions.plist \
+                     -exportPath output \
+                     CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: detective-h-ios
+          path: output/*.ipa
