@@ -2,13 +2,11 @@ name: iOS Build Check
 
 on:
   push:
-    branches: [ main, feature/vite-setup ] # Runs whenever you push to these branches
-  pull_request:
     branches: [ main ]
 
 jobs:
   build-ios:
-    runs-on: macos-latest # This is the "Virtual Mac"
+    runs-on: macos-latest
     
     steps:
       - name: Checkout Code
@@ -17,22 +15,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22 # Updated to match Capacitor's requirement
+          node-version: 22
 
       - name: Install Dependencies
         run: npm install
 
       - name: Build Web Assets
-        run: npm run build # Your Vite build
+        run: npm run build
 
       - name: Capacitor Sync
-        run: |
-          npx cap add ios
-          npx cap sync ios
+        run: npx cap sync ios # Just syncs, doesn't try to 'add'
 
       - name: Build iOS App (Validation Only)
         run: |
-          xcodebuild -workspace ios/App/App.xcworkspace \
+          WORKSPACE_PATH=$(find ios -name "*.xcworkspace" | head -n 1)
+          xcodebuild -workspace "$WORKSPACE_PATH" \
                      -scheme App \
                      -destination 'generic/platform=iOS Simulator' \
                      CODE_SIGNING_ALLOWED=NO \
