@@ -39,29 +39,33 @@ jobs:
                      CODE_SIGNING_ALLOWED=NO \
                      build
 
-      - name: Export IPA
+      - name: Build and Package IPA Manually
         run: |
           WORKSPACE_PATH=$(find ios -name "*.xcworkspace" | head -n 1)
           
-          # 1. Archive the build
+          # 1. Build the .app (This creates the raw application)
           xcodebuild -workspace "$WORKSPACE_PATH" \
                      -scheme App \
+                     -configuration Debug \
                      -destination 'generic/platform=iOS' \
-                     -archivePath App.xcarchive \
+                     -derivedDataPath build_output \
                      CODE_SIGNING_ALLOWED=NO \
-                     archive
+                     build
 
-          # 2. Export the .ipa
-          # Note: This step MAY still fail without a real Apple Certificate, 
-          # but it's the correct way to try and generate the file.
-          xcodebuild -exportArchive \
-                     -archivePath App.xcarchive \
-                     -exportOptionsPlist ios/App/App/ExportOptions.plist \
-                     -exportPath output \
-                     CODE_SIGNING_ALLOWED=NO
+          # 2. Find the .app and package it into a Payload folder
+          mkdir -p Payload
+          APP_PATH=$(find build_output -name "*.app" | head -n 1)
+          cp -R "$APP_PATH" Payload/
+          
+          # 3. Zip it and rename to .ipa
+          zip -r detective-h.ipa Payload
+          
+          # 4. Move to output folder for the uploader
+          mkdir -p output
+          mv detective-h.ipa output/
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: detective-h-ios
-          path: output/*.ipa
+          path: output/detective-h.ipa
