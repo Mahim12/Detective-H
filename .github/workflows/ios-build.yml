@@ -1,0 +1,71 @@
+name: iOS Build Check
+
+on:
+  push:
+    branches:
+      - '**' #Pipelines run on all branches instead of manually specifying  [ main, feature/vite-setup, feature/multiple-tests ] etc
+  pull_request:
+    branches:
+      - '**' #Pipelines run on all branches instead of manually specifying
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Assets
+        run: npm run build
+
+      - name: Capacitor Sync
+        run: npx cap sync ios # Just syncs, doesn't try to 'add'
+
+      - name: Build iOS App (Validation Only)
+        run: |
+          WORKSPACE_PATH=$(find ios -name "*.xcworkspace" | head -n 1)
+          xcodebuild -workspace "$WORKSPACE_PATH" \
+                     -scheme App \
+                     -destination 'generic/platform=iOS Simulator' \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build
+
+      - name: Build and Package IPA Manually
+        run: |
+          WORKSPACE_PATH=$(find ios -name "*.xcworkspace" | head -n 1)
+          
+          # 1. Build the .app (This creates the raw application)
+          xcodebuild -workspace "$WORKSPACE_PATH" \
+                     -scheme App \
+                     -configuration Debug \
+                     -destination 'generic/platform=iOS' \
+                     -derivedDataPath build_output \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build
+
+          # 2. Find the .app and package it into a Payload folder
+          mkdir -p Payload
+          APP_PATH=$(find build_output -name "*.app" | head -n 1)
+          cp -R "$APP_PATH" Payload/
+          
+          # 3. Zip it and rename to .ipa
+          zip -r detective-h.ipa Payload
+          
+          # 4. Move to output folder for the uploader
+          mkdir -p output
+          mv detective-h.ipa output/
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: detective-h-ios
+          path: output/detective-h.ipa
