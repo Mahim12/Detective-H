@@ -13,7 +13,7 @@ const Logic = {
         scene.add.image(cam.centerX, cam.centerY, "background");
         
         scene.time.delayedCall(2000, () => {
-            scene.scene.start("ThreeScene");
+            scene.scene.start("SuspectScene");
         });
     }
 };

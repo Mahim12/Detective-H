@@ -21,7 +21,11 @@
     "@capacitor/core": "^8.3.0",
     "@capacitor/ios": "^8.3.1",
     "@enable3d/phaser-extension": "^0.26.1",
-    "phaser": "^3.60.0"
+    "flipbook-js": "^1.1.1",
+    "jquery": "^4.0.0",
+    "phaser": "^3.60.0",
+    "phaser3-rex-plugins": "^1.80.20",
+    "turn.js": "^1.0.5"
   },
   "devDependencies": {
     "vite": "^8.0.8"
