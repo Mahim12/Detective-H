@@ -9,9 +9,9 @@ export default defineConfig({
     emptyOutDir: true,
     assetsDir: 'bundled',
     // ADD THIS SECTION: It stops Vite from breaking the 3D classes
-    minify: false, 
+    minify: false,
     commonjsOptions: {
-      transformMixedEsModules: true
-    }
-  }
+      transformMixedEsModules: true,
+    },
+  },
 });

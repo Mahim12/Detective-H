@@ -1,23 +1,23 @@
 import Phaser from 'phaser';
 
-
-// Group your logic into a constant object
-// Write all phaser logic in pure functions that take the scene as an argument.
-// Do not use 'this' in these functions, as they are not class methods.
+/**
+ * Group the logic into a constant object
+ * Write all phaser logic in pure functions that take the scene as an argument.
+ * Do not use 'this' in these functions, as they are not class methods.
+ */
 const Logic = {
-    preload: (scene) => {
-        scene.load.image('background', 'assets/sceneTwo/background.png');
-    },
-    create: (scene) => {
-        const cam = scene.cameras.main;
-        scene.add.image(cam.centerX, cam.centerY, "background");
-        
-        scene.time.delayedCall(2000, () => {
-            scene.scene.start("ThreeScene");
-        });
-    }
-};
+  preload: (scene) => {
+    scene.load.image('background', 'assets/sceneTwo/background.png');
+  },
+  create: (scene) => {
+    const cam = scene.cameras.main;
+    scene.add.image(cam.centerX, cam.centerY, 'background');
 
+    scene.time.delayedCall(2000, () => {
+      scene.scene.start('SuspectScene');
+    });
+  },
+};
 
 /**
  * WRAPPER CLASS FOR PHASER SCENE
@@ -25,14 +25,14 @@ const Logic = {
  * This separation allows for functional programming while keeping Phaser's class-based structure intact.
  */
 export default class MainScene extends Phaser.Scene {
-    constructor() {
-        super('MainScene');
-    }
-    preload() {
-        Logic.preload(this); // Logic's preload
-    }
+  constructor() {
+    super('MainScene');
+  }
+  preload() {
+    Logic.preload(this); // Logic's preload
+  }
 
-    create() {
-        Logic.create(this); // Logic's create
-    }
+  create() {
+    Logic.create(this); // Logic's create
+  }
 }
