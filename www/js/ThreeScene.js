@@ -17,16 +17,21 @@ const Logic = {
 
   async create(scene) {
     // 1. Lights (WarpSpeed usually adds them, but let's be 100% sure)
-    scene.third.warpSpeed('-physics', '-orbitControls'); // Disable physics specifically here
+    scene.third.warpSpeed('-physics', '-orbitControls'); // Disable physics specifically here , '-orbitControls'
 
     // 2. The Loader
     try {
       const gltf = await scene.third.load.gltf('/assets/human.glb');
+      const gltf2 = await scene.third.load.gltf('/assets/cottage_blender.glb');
+
+      const cottage = gltf2.scene;
       const model = gltf.scene;
 
       scene.player = model;
+      scene.cottage = cottage;
 
       scene.third.add.existing(model);
+      scene.third.add.existing(cottage);
 
       scene.joystick = new VirtualJoystick({
         scene: scene,
@@ -48,12 +53,6 @@ const Logic = {
       });
 
       scene.add.existing(scene.joystick);
-      scene.joystick.setDepth(999);
-
-      // --- ADD THESE LINES ---
-      scene.joystick.setVisible(true); // Force Phaser visibility
-      scene.joystick.setActive(true); // Ensure it's processing
-      scene.joystick.update();
 
       // Listen to joystick events
       scene.joystick.on('move', (data) => {
@@ -91,7 +90,8 @@ const Logic = {
       // Sometimes Blender models are exported tiny (0.01) or huge (100)
       ///model.scale.set(5, 5, 5);
       model.position.set(0, 0, 0);
-
+      cottage.position.set(0, 0, 0);
+      cottage.scale.set(0.5, 0.5, 0.5);
       // 4. Camera Position
       // Move back far enough to see a large object
       scene.third.camera.position.set(10, 10, 10);
